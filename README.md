@@ -2,11 +2,13 @@
 Currently this app is setup to run on a local network
 
 How to use:
-1. Run Server.exe
+Make sure to build both projects
+
+1. Run Server.exe Release build
 2. Run "ipconfig" in Command Prompt
 3. Copy and paste the IPv4 Address to the Server.exe prompt
 
-4. Run FileSharing.exe (for best demo, run this on another machine that is on the same network, however, still works on a single machine just fine)
+4. Run FileSharing.exe Release build (for best demo, run this on another machine that is on the same network, however, still works on a single machine just fine)
 5. Paste the IPv4 Address into Server IP box, add ":25565" to the end (default port for now)
 6. Press connect button
 

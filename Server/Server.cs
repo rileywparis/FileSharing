@@ -19,9 +19,12 @@ namespace Server
         static void Main(string[] args)
         {
             Console.Title = "Server";
-            Console.WriteLine("Setting up server...");
             Directory.CreateDirectory(PATH);
-            serverSocket.Bind(new IPEndPoint(IPAddress.Parse("172.20.8.252"), 25565));  //Modify this; IPv4 Address and port of your choice -------------------------------------------
+            Console.WriteLine("Enter IPv4 address: ");
+            string address = Console.ReadLine();
+            Console.WriteLine("Setting up server...");
+            //serverSocket.Bind(new IPEndPoint(IPAddress.Parse("172.20.8.252"), 25565));  //Modify this; IPv4 Address and port of your choice -------------------------------------------
+            serverSocket.Bind(new IPEndPoint(IPAddress.Parse(address), 25565));
             serverSocket.Listen(0);
             serverSocket.BeginAccept(AcceptCallback, null);
             Console.WriteLine("Setup complete");

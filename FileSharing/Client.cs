@@ -16,21 +16,22 @@ namespace FileSharing
     public partial class Client : Form
     {
         private static Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        private static string PATH = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\AppServer\Upload";
-        private static string PATH0 = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Downloads";
+        private static string PUSH_PATH = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\AppServer\Upload";
+        private static string PULL_PATH = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Downloads";
         private static int BUFFER_SIZE = 1024 * 1024 * 100; //1KB x 1,024 = 1MB; 1MB x 100 = 100MB
+        private List<string> pushFilePaths = new List<string>();
 
         public Client()
         {
             InitializeComponent();
-            Directory.CreateDirectory(PATH);
-            Directory.CreateDirectory(PATH0);
+            Directory.CreateDirectory(PUSH_PATH);
+            Directory.CreateDirectory(PULL_PATH);
+            pushFilePaths.Add(PUSH_PATH);
         }
 
         private void Client_Load(object sender, EventArgs e)
         {
-            lbClient.Items.Insert(0, "Save to: " + PATH0);
-            lbClient.Items.Insert(1, "Push from: " + PATH);
+            RefreshPushPaths();
         }
 
         private void btnConnect_Click(object sender, EventArgs e)
@@ -59,7 +60,7 @@ namespace FileSharing
             int receivedBytesLen = clientSocket.Receive(clientData);
             int fileNameLen = BitConverter.ToInt32(clientData, 0);
             string fileName = new DirectoryInfo(Encoding.ASCII.GetString(clientData, 4, fileNameLen)).Name;
-            BinaryWriter bWrite = new BinaryWriter(File.Open(PATH0 + @"\" + fileName, FileMode.Create));
+            BinaryWriter bWrite = new BinaryWriter(File.Open(PULL_PATH + @"\" + fileName, FileMode.Create));
             //BinaryWriter bWrite = new BinaryWriter(File.Open(@"C:\Users\panda\Desktop\Downloads\" + fileName, FileMode.Create));
             bWrite.Write(clientData, 4 + fileNameLen, receivedBytesLen - 4 - fileNameLen);
             bWrite.Close();
@@ -68,12 +69,32 @@ namespace FileSharing
 
         private void btnUpload_Click(object sender, EventArgs e)
         {
-
+            if (uploadFileBrowse.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                pushFilePaths.Add(uploadFileBrowse.);
+                RefreshPushPaths();
+            }
+            //if (folderBrowse.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            //{
+            //    pushFilePaths.Add(folderBrowse.SelectedPath);
+            //    RefreshPushPaths();
+            //}
         }
 
         private void btnPush_Click(object sender, EventArgs e)
         {
-            foreach (string f in Directory.GetFiles(PATH))
+            PushFiles(PUSH_PATH);
+        }
+
+        private void btnPull_Click(object sender, EventArgs e)
+        {
+            byte[] clientData = Encoding.ASCII.GetBytes("pull");
+            clientSocket.Send(clientData);
+        }
+
+        private void PushFiles(string path)
+        {
+            foreach (string f in Directory.GetFiles(path))
             {
                 byte[] fileNameByte = Encoding.ASCII.GetBytes(f);
                 byte[] fileNameLen = BitConverter.GetBytes(fileNameByte.Length);
@@ -87,10 +108,14 @@ namespace FileSharing
             }
         }
 
-        private void btnPull_Click(object sender, EventArgs e)
+        private void RefreshPushPaths()
         {
-            byte[] clientData = Encoding.ASCII.GetBytes("pull");
-            clientSocket.Send(clientData);
+            lbClient.Items.Clear();
+            lbClient.Items.Add("Save to: " + PULL_PATH);
+            lbClient.Items.Add("Push from: " + PUSH_PATH);
+            lbClient.Items.Add(" ");
+            foreach (string s in pushFilePaths)
+                lbClient.Items.Add(s);
         }
     }
 }

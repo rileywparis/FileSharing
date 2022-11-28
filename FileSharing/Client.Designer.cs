@@ -40,10 +40,12 @@
             this.btnUpload = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.pbStatus = new System.Windows.Forms.PictureBox();
-            this.btnSync = new System.Windows.Forms.Button();
             this.btnConnect = new System.Windows.Forms.Button();
             this.btnPull = new System.Windows.Forms.Button();
             this.btnPush = new System.Windows.Forms.Button();
+            this.btnSync = new System.Windows.Forms.Button();
+            this.folderBrowse = new System.Windows.Forms.FolderBrowserDialog();
+            this.uploadFileBrowse = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.pbStatus)).BeginInit();
             this.SuspendLayout();
             // 
@@ -103,9 +105,6 @@
             // lbClient
             // 
             this.lbClient.FormattingEnabled = true;
-            this.lbClient.Items.AddRange(new object[] {
-            "PLACEHOLDER",
-            "(This will be the interface for client files)"});
             this.lbClient.Location = new System.Drawing.Point(12, 298);
             this.lbClient.Name = "lbClient";
             this.lbClient.Size = new System.Drawing.Size(435, 173);
@@ -124,7 +123,6 @@
             // 
             // btnUpload
             // 
-            this.btnUpload.Enabled = false;
             this.btnUpload.Location = new System.Drawing.Point(372, 510);
             this.btnUpload.Name = "btnUpload";
             this.btnUpload.Size = new System.Drawing.Size(75, 23);
@@ -144,18 +142,6 @@
             this.pbStatus.TabIndex = 3;
             this.pbStatus.TabStop = false;
             this.toolTip.SetToolTip(this.pbStatus, "Connection status");
-            // 
-            // btnSync
-            // 
-            this.btnSync.BackgroundImage = global::FileSharing.Properties.Resources.SyncDatabase;
-            this.btnSync.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnSync.Enabled = false;
-            this.btnSync.Location = new System.Drawing.Point(12, 510);
-            this.btnSync.Name = "btnSync";
-            this.btnSync.Size = new System.Drawing.Size(27, 26);
-            this.btnSync.TabIndex = 2;
-            this.btnSync.UseVisualStyleBackColor = true;
-            this.btnSync.Click += new System.EventHandler(this.btnConnect_Click);
             // 
             // btnConnect
             // 
@@ -194,6 +180,22 @@
             this.toolTip.SetToolTip(this.btnPush, "Pushes changes to the server (temporarily uploads all \"Uploads\" to server");
             this.btnPush.UseVisualStyleBackColor = true;
             this.btnPush.Click += new System.EventHandler(this.btnPush_Click);
+            // 
+            // btnSync
+            // 
+            this.btnSync.BackgroundImage = global::FileSharing.Properties.Resources.SyncDatabase;
+            this.btnSync.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnSync.Enabled = false;
+            this.btnSync.Location = new System.Drawing.Point(12, 510);
+            this.btnSync.Name = "btnSync";
+            this.btnSync.Size = new System.Drawing.Size(27, 26);
+            this.btnSync.TabIndex = 2;
+            this.btnSync.UseVisualStyleBackColor = true;
+            this.btnSync.Click += new System.EventHandler(this.btnConnect_Click);
+            // 
+            // uploadFileBrowse
+            // 
+            this.uploadFileBrowse.FileName = "file";
             // 
             // Client
             // 
@@ -241,6 +243,8 @@
         private System.Windows.Forms.Button btnSync;
         private System.Windows.Forms.Button btnPull;
         private System.Windows.Forms.Button btnPush;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowse;
+        private System.Windows.Forms.OpenFileDialog uploadFileBrowse;
     }
 }
 

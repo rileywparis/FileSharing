@@ -39,13 +39,14 @@
             this.btn = new System.Windows.Forms.Button();
             this.btnUpload = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.pbStatus = new System.Windows.Forms.PictureBox();
-            this.btnConnect = new System.Windows.Forms.Button();
-            this.btnPull = new System.Windows.Forms.Button();
-            this.btnPush = new System.Windows.Forms.Button();
-            this.btnSync = new System.Windows.Forms.Button();
             this.folderBrowse = new System.Windows.Forms.FolderBrowserDialog();
             this.uploadFileBrowse = new System.Windows.Forms.OpenFileDialog();
+            this.pbStatus = new System.Windows.Forms.PictureBox();
+            this.btnRefresh = new System.Windows.Forms.Button();
+            this.btnPush = new System.Windows.Forms.Button();
+            this.btnPull = new System.Windows.Forms.Button();
+            this.btnSync = new System.Windows.Forms.Button();
+            this.btnConnect = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pbStatus)).BeginInit();
             this.SuspendLayout();
             // 
@@ -132,6 +133,11 @@
             this.btnUpload.UseVisualStyleBackColor = true;
             this.btnUpload.Click += new System.EventHandler(this.btnUpload_Click);
             // 
+            // uploadFileBrowse
+            // 
+            this.uploadFileBrowse.FileName = "file";
+            this.uploadFileBrowse.Multiselect = true;
+            // 
             // pbStatus
             // 
             this.pbStatus.BackgroundImage = global::FileSharing.Properties.Resources.CloudError;
@@ -143,30 +149,17 @@
             this.pbStatus.TabStop = false;
             this.toolTip.SetToolTip(this.pbStatus, "Connection status");
             // 
-            // btnConnect
+            // btnRefresh
             // 
-            this.btnConnect.BackgroundImage = global::FileSharing.Properties.Resources.ConnectArrow;
-            this.btnConnect.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnConnect.Location = new System.Drawing.Point(294, 9);
-            this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Size = new System.Drawing.Size(27, 26);
-            this.btnConnect.TabIndex = 2;
-            this.toolTip.SetToolTip(this.btnConnect, "Connect");
-            this.btnConnect.UseVisualStyleBackColor = true;
-            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
-            // 
-            // btnPull
-            // 
-            this.btnPull.BackgroundImage = global::FileSharing.Properties.Resources.Pull;
-            this.btnPull.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnPull.Enabled = false;
-            this.btnPull.Location = new System.Drawing.Point(45, 510);
-            this.btnPull.Name = "btnPull";
-            this.btnPull.Size = new System.Drawing.Size(27, 26);
-            this.btnPull.TabIndex = 2;
-            this.toolTip.SetToolTip(this.btnPull, "Pulls changes from server (temporarily downloads all server files)");
-            this.btnPull.UseVisualStyleBackColor = true;
-            this.btnPull.Click += new System.EventHandler(this.btnPull_Click);
+            this.btnRefresh.BackgroundImage = global::FileSharing.Properties.Resources.Refresh;
+            this.btnRefresh.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnRefresh.Enabled = false;
+            this.btnRefresh.Location = new System.Drawing.Point(420, 477);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(27, 26);
+            this.btnRefresh.TabIndex = 2;
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // btnPush
             // 
@@ -181,6 +174,19 @@
             this.btnPush.UseVisualStyleBackColor = true;
             this.btnPush.Click += new System.EventHandler(this.btnPush_Click);
             // 
+            // btnPull
+            // 
+            this.btnPull.BackgroundImage = global::FileSharing.Properties.Resources.Pull;
+            this.btnPull.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnPull.Enabled = false;
+            this.btnPull.Location = new System.Drawing.Point(45, 510);
+            this.btnPull.Name = "btnPull";
+            this.btnPull.Size = new System.Drawing.Size(27, 26);
+            this.btnPull.TabIndex = 2;
+            this.toolTip.SetToolTip(this.btnPull, "Pulls changes from server (temporarily downloads all server files)");
+            this.btnPull.UseVisualStyleBackColor = true;
+            this.btnPull.Click += new System.EventHandler(this.btnPull_Click);
+            // 
             // btnSync
             // 
             this.btnSync.BackgroundImage = global::FileSharing.Properties.Resources.SyncDatabase;
@@ -193,9 +199,17 @@
             this.btnSync.UseVisualStyleBackColor = true;
             this.btnSync.Click += new System.EventHandler(this.btnConnect_Click);
             // 
-            // uploadFileBrowse
+            // btnConnect
             // 
-            this.uploadFileBrowse.FileName = "file";
+            this.btnConnect.BackgroundImage = global::FileSharing.Properties.Resources.ConnectArrow;
+            this.btnConnect.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnConnect.Location = new System.Drawing.Point(294, 9);
+            this.btnConnect.Name = "btnConnect";
+            this.btnConnect.Size = new System.Drawing.Size(27, 26);
+            this.btnConnect.TabIndex = 2;
+            this.toolTip.SetToolTip(this.btnConnect, "Connect");
+            this.btnConnect.UseVisualStyleBackColor = true;
+            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
             // 
             // Client
             // 
@@ -207,6 +221,7 @@
             this.Controls.Add(this.lbClient);
             this.Controls.Add(this.lbServer);
             this.Controls.Add(this.pbStatus);
+            this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnPush);
             this.Controls.Add(this.btnPull);
             this.Controls.Add(this.btnSync);
@@ -245,6 +260,7 @@
         private System.Windows.Forms.Button btnPush;
         private System.Windows.Forms.FolderBrowserDialog folderBrowse;
         private System.Windows.Forms.OpenFileDialog uploadFileBrowse;
+        private System.Windows.Forms.Button btnRefresh;
     }
 }
 

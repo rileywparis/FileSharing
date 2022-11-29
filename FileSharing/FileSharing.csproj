@@ -98,5 +98,8 @@
   <ItemGroup>
     <None Include="Properties\Resources\SyncDatabase.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Resources\Refresh.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -79,7 +79,7 @@
             "(This will be the interface for server files)"});
             this.lbServer.Location = new System.Drawing.Point(12, 78);
             this.lbServer.Name = "lbServer";
-            this.lbServer.Size = new System.Drawing.Size(435, 173);
+            this.lbServer.Size = new System.Drawing.Size(402, 173);
             this.lbServer.TabIndex = 4;
             // 
             // lbl1
@@ -109,14 +109,14 @@
             this.lbClient.FormattingEnabled = true;
             this.lbClient.Location = new System.Drawing.Point(12, 298);
             this.lbClient.Name = "lbClient";
-            this.lbClient.Size = new System.Drawing.Size(435, 173);
+            this.lbClient.Size = new System.Drawing.Size(402, 173);
             this.lbClient.TabIndex = 4;
             this.lbClient.DoubleClick += new System.EventHandler(this.lbClient_DoubleClick);
             // 
             // btn
             // 
             this.btn.Enabled = false;
-            this.btn.Location = new System.Drawing.Point(372, 269);
+            this.btn.Location = new System.Drawing.Point(339, 257);
             this.btn.Name = "btn";
             this.btn.Size = new System.Drawing.Size(75, 23);
             this.btn.TabIndex = 5;
@@ -126,11 +126,11 @@
             // 
             // btnUpload
             // 
-            this.btnUpload.Location = new System.Drawing.Point(372, 510);
+            this.btnUpload.Location = new System.Drawing.Point(339, 477);
             this.btnUpload.Name = "btnUpload";
             this.btnUpload.Size = new System.Drawing.Size(75, 23);
             this.btnUpload.TabIndex = 6;
-            this.btnUpload.Text = "Upload";
+            this.btnUpload.Text = "Add Files";
             this.toolTip.SetToolTip(this.btnUpload, "Adds files to the upload queue");
             this.btnUpload.UseVisualStyleBackColor = true;
             this.btnUpload.Click += new System.EventHandler(this.btnUpload_Click);
@@ -151,7 +151,7 @@
             this.btnPush.BackgroundImage = global::FileSharing.Properties.Resources.Push;
             this.btnPush.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnPush.Enabled = false;
-            this.btnPush.Location = new System.Drawing.Point(78, 510);
+            this.btnPush.Location = new System.Drawing.Point(78, 477);
             this.btnPush.Name = "btnPush";
             this.btnPush.Size = new System.Drawing.Size(27, 26);
             this.btnPush.TabIndex = 2;
@@ -164,7 +164,7 @@
             this.btnPull.BackgroundImage = global::FileSharing.Properties.Resources.Pull;
             this.btnPull.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnPull.Enabled = false;
-            this.btnPull.Location = new System.Drawing.Point(45, 510);
+            this.btnPull.Location = new System.Drawing.Point(45, 477);
             this.btnPull.Name = "btnPull";
             this.btnPull.Size = new System.Drawing.Size(27, 26);
             this.btnPull.TabIndex = 2;
@@ -194,7 +194,7 @@
             this.btnRefresh.BackgroundImage = global::FileSharing.Properties.Resources.Refresh;
             this.btnRefresh.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnRefresh.Enabled = false;
-            this.btnRefresh.Location = new System.Drawing.Point(420, 477);
+            this.btnRefresh.Location = new System.Drawing.Point(420, 298);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(27, 26);
             this.btnRefresh.TabIndex = 2;
@@ -207,7 +207,7 @@
             this.btnSync.BackgroundImage = global::FileSharing.Properties.Resources.SyncDatabase;
             this.btnSync.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnSync.Enabled = false;
-            this.btnSync.Location = new System.Drawing.Point(12, 510);
+            this.btnSync.Location = new System.Drawing.Point(12, 477);
             this.btnSync.Name = "btnSync";
             this.btnSync.Size = new System.Drawing.Size(27, 26);
             this.btnSync.TabIndex = 2;
@@ -219,7 +219,7 @@
             this.btnRemove.BackgroundImage = global::FileSharing.Properties.Resources.Refresh;
             this.btnRemove.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnRemove.Enabled = false;
-            this.btnRemove.Location = new System.Drawing.Point(387, 478);
+            this.btnRemove.Location = new System.Drawing.Point(420, 330);
             this.btnRemove.Name = "btnRemove";
             this.btnRemove.Size = new System.Drawing.Size(27, 26);
             this.btnRemove.TabIndex = 2;
@@ -231,7 +231,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(459, 545);
+            this.ClientSize = new System.Drawing.Size(459, 516);
             this.Controls.Add(this.btnUpload);
             this.Controls.Add(this.btn);
             this.Controls.Add(this.lbClient);

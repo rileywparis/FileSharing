@@ -106,5 +106,19 @@ namespace Server
                 }
             }
         }
+
+        private static void SendFileNames(Socket clientSocket)
+        {
+            foreach (string f in Directory.GetFiles(PATH))
+            {
+                string fileName = new DirectoryInfo(f).Name;
+                if (f != "Upload")
+                {
+                    Console.WriteLine(clientSocket.LocalEndPoint + " receiving filenames");
+                    byte[] serverData = Encoding.ASCII.GetBytes(f);
+                    clientSocket.Send(serverData);
+                }
+            }
+        }
     }
 }

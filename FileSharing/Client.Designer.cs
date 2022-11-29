@@ -39,14 +39,15 @@
             this.btn = new System.Windows.Forms.Button();
             this.btnUpload = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.folderBrowse = new System.Windows.Forms.FolderBrowserDialog();
-            this.uploadFileBrowse = new System.Windows.Forms.OpenFileDialog();
             this.pbStatus = new System.Windows.Forms.PictureBox();
-            this.btnRefresh = new System.Windows.Forms.Button();
             this.btnPush = new System.Windows.Forms.Button();
             this.btnPull = new System.Windows.Forms.Button();
-            this.btnSync = new System.Windows.Forms.Button();
             this.btnConnect = new System.Windows.Forms.Button();
+            this.folderBrowse = new System.Windows.Forms.FolderBrowserDialog();
+            this.uploadFileBrowse = new System.Windows.Forms.OpenFileDialog();
+            this.btnRefresh = new System.Windows.Forms.Button();
+            this.btnSync = new System.Windows.Forms.Button();
+            this.btnRemove = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pbStatus)).BeginInit();
             this.SuspendLayout();
             // 
@@ -110,6 +111,7 @@
             this.lbClient.Name = "lbClient";
             this.lbClient.Size = new System.Drawing.Size(435, 173);
             this.lbClient.TabIndex = 4;
+            this.lbClient.DoubleClick += new System.EventHandler(this.lbClient_DoubleClick);
             // 
             // btn
             // 
@@ -129,14 +131,9 @@
             this.btnUpload.Size = new System.Drawing.Size(75, 23);
             this.btnUpload.TabIndex = 6;
             this.btnUpload.Text = "Upload";
-            this.toolTip.SetToolTip(this.btnUpload, "Uploads files from the \"Upload\" folder to the server (temporary)");
+            this.toolTip.SetToolTip(this.btnUpload, "Adds files to the upload queue");
             this.btnUpload.UseVisualStyleBackColor = true;
             this.btnUpload.Click += new System.EventHandler(this.btnUpload_Click);
-            // 
-            // uploadFileBrowse
-            // 
-            this.uploadFileBrowse.FileName = "file";
-            this.uploadFileBrowse.Multiselect = true;
             // 
             // pbStatus
             // 
@@ -148,18 +145,6 @@
             this.pbStatus.TabIndex = 3;
             this.pbStatus.TabStop = false;
             this.toolTip.SetToolTip(this.pbStatus, "Connection status");
-            // 
-            // btnRefresh
-            // 
-            this.btnRefresh.BackgroundImage = global::FileSharing.Properties.Resources.Refresh;
-            this.btnRefresh.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnRefresh.Enabled = false;
-            this.btnRefresh.Location = new System.Drawing.Point(420, 477);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(27, 26);
-            this.btnRefresh.TabIndex = 2;
-            this.btnRefresh.UseVisualStyleBackColor = true;
-            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // btnPush
             // 
@@ -187,18 +172,6 @@
             this.btnPull.UseVisualStyleBackColor = true;
             this.btnPull.Click += new System.EventHandler(this.btnPull_Click);
             // 
-            // btnSync
-            // 
-            this.btnSync.BackgroundImage = global::FileSharing.Properties.Resources.SyncDatabase;
-            this.btnSync.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnSync.Enabled = false;
-            this.btnSync.Location = new System.Drawing.Point(12, 510);
-            this.btnSync.Name = "btnSync";
-            this.btnSync.Size = new System.Drawing.Size(27, 26);
-            this.btnSync.TabIndex = 2;
-            this.btnSync.UseVisualStyleBackColor = true;
-            this.btnSync.Click += new System.EventHandler(this.btnConnect_Click);
-            // 
             // btnConnect
             // 
             this.btnConnect.BackgroundImage = global::FileSharing.Properties.Resources.ConnectArrow;
@@ -211,6 +184,49 @@
             this.btnConnect.UseVisualStyleBackColor = true;
             this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
             // 
+            // uploadFileBrowse
+            // 
+            this.uploadFileBrowse.FileName = "file";
+            this.uploadFileBrowse.Multiselect = true;
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.BackgroundImage = global::FileSharing.Properties.Resources.Refresh;
+            this.btnRefresh.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnRefresh.Enabled = false;
+            this.btnRefresh.Location = new System.Drawing.Point(420, 477);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(27, 26);
+            this.btnRefresh.TabIndex = 2;
+            this.toolTip.SetToolTip(this.btnRefresh, "Refreshes the items in queue");
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
+            // btnSync
+            // 
+            this.btnSync.BackgroundImage = global::FileSharing.Properties.Resources.SyncDatabase;
+            this.btnSync.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnSync.Enabled = false;
+            this.btnSync.Location = new System.Drawing.Point(12, 510);
+            this.btnSync.Name = "btnSync";
+            this.btnSync.Size = new System.Drawing.Size(27, 26);
+            this.btnSync.TabIndex = 2;
+            this.btnSync.UseVisualStyleBackColor = true;
+            this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
+            // 
+            // btnRemove
+            // 
+            this.btnRemove.BackgroundImage = global::FileSharing.Properties.Resources.Refresh;
+            this.btnRemove.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnRemove.Enabled = false;
+            this.btnRemove.Location = new System.Drawing.Point(387, 478);
+            this.btnRemove.Name = "btnRemove";
+            this.btnRemove.Size = new System.Drawing.Size(27, 26);
+            this.btnRemove.TabIndex = 2;
+            this.toolTip.SetToolTip(this.btnRemove, "Removes selected item from queue");
+            this.btnRemove.UseVisualStyleBackColor = true;
+            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
+            // 
             // Client
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -221,6 +237,7 @@
             this.Controls.Add(this.lbClient);
             this.Controls.Add(this.lbServer);
             this.Controls.Add(this.pbStatus);
+            this.Controls.Add(this.btnRemove);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnPush);
             this.Controls.Add(this.btnPull);
@@ -261,6 +278,7 @@
         private System.Windows.Forms.FolderBrowserDialog folderBrowse;
         private System.Windows.Forms.OpenFileDialog uploadFileBrowse;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button btnRemove;
     }
 }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -53,28 +54,13 @@ namespace FileSharing
                 pbStatus.BackgroundImage = FileSharing.Properties.Resources.CloudOK;
                 btnPull.Enabled = true;
                 btnPush.Enabled = true;
+                btnSync.Enabled = true;
+                btnRemove.Enabled = true;
                 btnRefresh.Enabled = true;
 
                 Thread t = new Thread(() => ReceiveMessage());
                 t.Start();
             }
-            //if (!clientSocket.Connected)
-            //{
-            //    string[] address = txtAddress.Text.Split(':');
-            //    while (!clientSocket.Connected)
-            //        try
-            //        {
-            //            clientSocket.Connect(address[0], int.Parse(address[1]));
-            //        }
-            //        catch (SocketException) { }
-            //    pbStatus.BackgroundImage = FileSharing.Properties.Resources.CloudOK;
-            //    btnPull.Enabled = true;
-            //    btnPush.Enabled = true;
-            //    btnRefresh.Enabled = true;
-
-            //    Thread t = new Thread(() => ReceiveMessage());
-            //    t.Start();
-            //}
         }
 
         private static void ReceiveMessage()
@@ -84,7 +70,6 @@ namespace FileSharing
             int fileNameLen = BitConverter.ToInt32(clientData, 0);
             string fileName = new DirectoryInfo(Encoding.ASCII.GetString(clientData, 4, fileNameLen)).Name;
             BinaryWriter bWrite = new BinaryWriter(File.Open(PULL_PATH + @"\" + fileName, FileMode.Create));
-            //BinaryWriter bWrite = new BinaryWriter(File.Open(@"C:\Users\panda\Desktop\Downloads\" + fileName, FileMode.Create));
             bWrite.Write(clientData, 4 + fileNameLen, receivedBytesLen - 4 - fileNameLen);
             bWrite.Close();
             ReceiveMessage();
@@ -107,8 +92,7 @@ namespace FileSharing
 
         private void btnPull_Click(object sender, EventArgs e)
         {
-            byte[] clientData = Encoding.ASCII.GetBytes("pull");
-            clientSocket.Send(clientData);
+            PullAll();
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)
@@ -116,6 +100,29 @@ namespace FileSharing
             foreach (string f in Directory.GetFiles(PUSH_PATH))
                 if (!pushFilePaths.Contains(f))
                     pushFilePaths.Add(f);
+            RefreshPushPaths();
+        }
+
+        private void btnSync_Click(object sender, EventArgs e)
+        {
+            PushFiles();
+            PullAll();
+        }
+
+        private void lbClient_DoubleClick(object sender, EventArgs e)
+        {
+            if (lbClient.SelectedIndex == 0)
+                Process.Start(PULL_PATH);
+            else if (lbClient.SelectedIndex == 1)
+                Process.Start(PUSH_PATH);
+            else if (File.Exists(lbClient.SelectedItem.ToString()))
+                Process.Start(lbClient.SelectedItem.ToString());
+        }
+
+        private void btnRemove_Click(object sender, EventArgs e)
+        {
+            if (lbClient.SelectedIndex > 3)
+                pushFilePaths.Remove(lbClient.SelectedItem.ToString());
             RefreshPushPaths();
         }
 
@@ -137,17 +144,6 @@ namespace FileSharing
             }
             RefreshPullList();
             //foreach (string f in Directory.GetFiles(path))
-            //{
-            //    byte[] fileNameByte = Encoding.ASCII.GetBytes(f);
-            //    byte[] fileNameLen = BitConverter.GetBytes(fileNameByte.Length);
-            //    byte[] fileData = File.ReadAllBytes(f);
-            //    byte[] clientData = new byte[4 + fileNameByte.Length + fileData.Length];
-
-            //    fileNameLen.CopyTo(clientData, 0);
-            //    fileNameByte.CopyTo(clientData, 4);
-            //    fileData.CopyTo(clientData, 4 + fileNameByte.Length);
-            //    clientSocket.Send(clientData);
-            //}
         }
 
         private void RefreshPushPaths()
@@ -166,6 +162,12 @@ namespace FileSharing
             lbServer.Items.Clear();
             foreach (string s in Directory.GetFiles(SERVER_PATH))
                 lbServer.Items.Add(s);
+        }
+
+        private void PullAll()
+        {
+            byte[] clientData = Encoding.ASCII.GetBytes("pull");
+            clientSocket.Send(clientData);
         }
     }
 }

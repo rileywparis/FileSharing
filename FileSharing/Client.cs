@@ -95,16 +95,14 @@ namespace FileSharing
             if (uploadFileBrowse.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 foreach (string f in uploadFileBrowse.FileNames)
-                {
                     pushFilePaths.Add(f);
-                }
                 RefreshPushPaths();
             }
         }
 
         private void btnPush_Click(object sender, EventArgs e)
         {
-            PushFiles(PUSH_PATH);
+            PushFiles();
         }
 
         private void btnPull_Click(object sender, EventArgs e)
@@ -121,7 +119,7 @@ namespace FileSharing
             RefreshPushPaths();
         }
 
-        private void PushFiles(string path)
+        private void PushFiles()
         {
             foreach (string f in pushFilePaths)
             {
@@ -134,6 +132,8 @@ namespace FileSharing
                 fileNameByte.CopyTo(clientData, 4);
                 fileData.CopyTo(clientData, 4 + fileNameByte.Length);
                 clientSocket.Send(clientData);
+
+                Thread.Sleep(1500);
             }
             RefreshPullList();
             //foreach (string f in Directory.GetFiles(path))

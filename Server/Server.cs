@@ -102,7 +102,7 @@ namespace Server
                     fileData.CopyTo(serverData, 4 + fileNameByte.Length);
                     clientSocket.Send(serverData);
 
-                    Thread.Sleep(1000); //Temporary pause to prevent bug
+                    Thread.Sleep(1500); //Temporary pause to prevent bug
                 }
             }
         }

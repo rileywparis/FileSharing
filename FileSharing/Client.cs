@@ -63,16 +63,28 @@ namespace FileSharing
             }
         }
 
-        private static void ReceiveMessage()
+        private void ReceiveMessage()
         {
             byte[] clientData = new byte[BUFFER_SIZE];
             int receivedBytesLen = clientSocket.Receive(clientData);
-            int fileNameLen = BitConverter.ToInt32(clientData, 0);
-            string fileName = new DirectoryInfo(Encoding.ASCII.GetString(clientData, 4, fileNameLen)).Name;
-            BinaryWriter bWrite = new BinaryWriter(File.Open(PULL_PATH + @"\" + fileName, FileMode.Create));
-            bWrite.Write(clientData, 4 + fileNameLen, receivedBytesLen - 4 - fileNameLen);
-            bWrite.Close();
-            ReceiveMessage();
+
+            if (Encoding.ASCII.GetString(clientData, 0, sizeof(char) * 3).Contains("$$$"))
+            {
+                lbServer.Items.Clear();
+                string[] fileNames = Encoding.ASCII.GetString(clientData).Substring(3).Split(';');
+                foreach (string f in fileNames)
+                    lbServer.Items.Add(f);
+                ReceiveMessage();
+            }
+            else
+            {
+                int fileNameLen = BitConverter.ToInt32(clientData, 0);
+                string fileName = new DirectoryInfo(Encoding.ASCII.GetString(clientData, 4, fileNameLen)).Name;
+                BinaryWriter bWrite = new BinaryWriter(File.Open(PULL_PATH + @"\" + fileName, FileMode.Create));
+                bWrite.Write(clientData, 4 + fileNameLen, receivedBytesLen - 4 - fileNameLen);
+                bWrite.Close();
+                ReceiveMessage();
+            }
         }
 
         private void btnUpload_Click(object sender, EventArgs e)
@@ -97,6 +109,11 @@ namespace FileSharing
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
+            // ########################
+            byte[] clientData = Encoding.ASCII.GetBytes("getfiles");
+            clientSocket.Send(clientData);
+            // ########################
+
             foreach (string f in Directory.GetFiles(PUSH_PATH))
                 if (!pushFilePaths.Contains(f))
                     pushFilePaths.Add(f);

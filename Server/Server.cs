@@ -71,6 +71,8 @@ namespace Server
 
             if (Encoding.ASCII.GetString(recBuf).Equals("pull"))
                 Send(current);
+            else if (Encoding.ASCII.GetString(recBuf).Equals("getfiles"))
+                SendFileNames(current);
             else
             {
                 int fileNameLen = BitConverter.ToInt32(recBuf, 0);
@@ -109,16 +111,18 @@ namespace Server
 
         private static void SendFileNames(Socket clientSocket)
         {
+            Console.WriteLine(clientSocket.LocalEndPoint + " receiving filenames");
+            string fileNames = "$$$";
             foreach (string f in Directory.GetFiles(PATH))
             {
                 string fileName = new DirectoryInfo(f).Name;
-                if (f != "Upload")
+                if (fileName != "Upload")
                 {
-                    Console.WriteLine(clientSocket.LocalEndPoint + " receiving filenames");
-                    byte[] serverData = Encoding.ASCII.GetBytes(f);
-                    clientSocket.Send(serverData);
+                    fileNames += fileName + ";";
                 }
             }
+            byte[] serverData = Encoding.ASCII.GetBytes(fileNames);
+            clientSocket.Send(serverData);
         }
     }
 }

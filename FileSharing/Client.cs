@@ -17,7 +17,6 @@ namespace FileSharing
     public partial class Client : Form
     {
         private static Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        private static string SERVER_PATH = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\AppServer";
         private static string PUSH_PATH = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\AppServer\Upload";
         private static string PULL_PATH = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Downloads";
         private static int BUFFER_SIZE = 1024 * 1024 * 100; //1KB x 1,024 = 1MB; 1MB x 100 = 100MB
@@ -35,7 +34,8 @@ namespace FileSharing
         private void Client_Load(object sender, EventArgs e)
         {
             RefreshPushPaths();
-            RefreshPullList();
+            lbServer.Items.Clear();
+            lbServer.Items.Add("Not connected");
         }
 
         private void btnConnect_Click(object sender, EventArgs e)
@@ -57,6 +57,7 @@ namespace FileSharing
                 btnSync.Enabled = true;
                 btnRemove.Enabled = true;
                 btnRefresh.Enabled = true;
+                RefreshPullList();
 
                 Thread t = new Thread(() => ReceiveMessage());
                 t.Start();
@@ -74,7 +75,6 @@ namespace FileSharing
                 string[] fileNames = Encoding.ASCII.GetString(clientData).Substring(3).Split(';');
                 foreach (string f in fileNames)
                     lbServer.Items.Add(f);
-                ReceiveMessage();
             }
             else
             {
@@ -83,8 +83,8 @@ namespace FileSharing
                 BinaryWriter bWrite = new BinaryWriter(File.Open(PULL_PATH + @"\" + fileName, FileMode.Create));
                 bWrite.Write(clientData, 4 + fileNameLen, receivedBytesLen - 4 - fileNameLen);
                 bWrite.Close();
-                ReceiveMessage();
             }
+            ReceiveMessage();
         }
 
         private void btnUpload_Click(object sender, EventArgs e)
@@ -100,24 +100,22 @@ namespace FileSharing
         private void btnPush_Click(object sender, EventArgs e)
         {
             PushFiles();
+            RefreshPullList();
         }
 
         private void btnPull_Click(object sender, EventArgs e)
         {
+            RefreshPullList();
             PullAll();
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
-            // ########################
-            byte[] clientData = Encoding.ASCII.GetBytes("getfiles");
-            clientSocket.Send(clientData);
-            // ########################
-
             foreach (string f in Directory.GetFiles(PUSH_PATH))
                 if (!pushFilePaths.Contains(f))
                     pushFilePaths.Add(f);
             RefreshPushPaths();
+            RefreshPullList();
         }
 
         private void btnSync_Click(object sender, EventArgs e)
@@ -177,8 +175,8 @@ namespace FileSharing
         private void RefreshPullList()
         {
             lbServer.Items.Clear();
-            foreach (string s in Directory.GetFiles(SERVER_PATH))
-                lbServer.Items.Add(s);
+            byte[] clientData = Encoding.ASCII.GetBytes("getfiles");
+            clientSocket.Send(clientData);
         }
 
         private void PullAll()

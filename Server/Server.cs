@@ -88,10 +88,10 @@ namespace Server
                 BinaryWriter bWrite = new BinaryWriter(File.Open(PATH + @"\" + fileName, FileMode.Create));
                 bWrite.Write(recBuf, 4 + fileNameLen, received - 4 - fileNameLen);
                 bWrite.Close();
-                Notify(current);
             }
 
             current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
+            Notify(current);
         }
 
         private static void Send(Socket clientSocket)

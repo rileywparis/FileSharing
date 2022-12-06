@@ -154,14 +154,18 @@ namespace FileSharing
             RefreshPullList();
         }
 
+        static void OnProcessExit(object sender, EventArgs e)
+        {
+            clientSocket.Disconnect(true);
+        }
+
         private void PushFiles()
         {
             foreach (string f in pushFilePaths)
             {
-                while (busy)
-                {
+                System.Threading.SpinWait.SpinUntil(() => !busy);
+                busy = true;
 
-                }
                 byte[] fileNameByte = Encoding.ASCII.GetBytes(f);
                 byte[] fileNameLen = BitConverter.GetBytes(fileNameByte.Length);
                 byte[] fileData = File.ReadAllBytes(f);
@@ -171,8 +175,6 @@ namespace FileSharing
                 fileNameByte.CopyTo(clientData, 4);
                 fileData.CopyTo(clientData, 4 + fileNameByte.Length);
                 clientSocket.Send(clientData);
-
-                busy = true;
             }
             pushFilePaths.Clear();
             RefreshPullList();

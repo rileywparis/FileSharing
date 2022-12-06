@@ -57,6 +57,7 @@ namespace FileSharing
                 btnSync.Enabled = true;
                 btnRemove.Enabled = true;
                 btnRefresh.Enabled = true;
+                btnServerRemove.Enabled = true;
                 RefreshPullList();
 
                 Thread t = new Thread(() => ReceiveMessage());
@@ -141,6 +142,21 @@ namespace FileSharing
             RefreshPushPaths();
         }
 
+        private void btnServerRemove_Click(object sender, EventArgs e)
+        {
+
+            if (lbServer.SelectedIndex != -1 && File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\AppServer\" + @lbServer.SelectedItem.ToString()))
+            {
+                DialogResult d = MessageBox.Show("Are you sure you want to permanently delete file?", "Warning!", MessageBoxButtons.OKCancel);
+
+                if (d == DialogResult.OK)
+                    File.Delete(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\AppServer\" + @lbServer.SelectedItem.ToString());
+            }
+            else
+                MessageBox.Show("File not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            RefreshPullList();
+        }
+
         private void PushFiles()
         {
             foreach (string f in pushFilePaths)
@@ -157,8 +173,8 @@ namespace FileSharing
 
                 Thread.Sleep(1500);
             }
+            pushFilePaths.Clear();
             RefreshPullList();
-            //foreach (string f in Directory.GetFiles(path))
         }
 
         private void RefreshPushPaths()

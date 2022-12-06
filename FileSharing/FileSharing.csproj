@@ -101,5 +101,11 @@
   <ItemGroup>
     <None Include="Properties\Resources\Refresh.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Resources\PendingDeleteNode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Resources\Cancel.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

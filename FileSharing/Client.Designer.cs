@@ -40,14 +40,15 @@
             this.btnUpload = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.pbStatus = new System.Windows.Forms.PictureBox();
+            this.btnRemove = new System.Windows.Forms.Button();
+            this.btnRefresh = new System.Windows.Forms.Button();
             this.btnPush = new System.Windows.Forms.Button();
             this.btnPull = new System.Windows.Forms.Button();
             this.btnConnect = new System.Windows.Forms.Button();
             this.folderBrowse = new System.Windows.Forms.FolderBrowserDialog();
             this.uploadFileBrowse = new System.Windows.Forms.OpenFileDialog();
-            this.btnRefresh = new System.Windows.Forms.Button();
             this.btnSync = new System.Windows.Forms.Button();
-            this.btnRemove = new System.Windows.Forms.Button();
+            this.btnServerRemove = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pbStatus)).BeginInit();
             this.SuspendLayout();
             // 
@@ -146,6 +147,32 @@
             this.pbStatus.TabStop = false;
             this.toolTip.SetToolTip(this.pbStatus, "Connection status");
             // 
+            // btnRemove
+            // 
+            this.btnRemove.BackgroundImage = global::FileSharing.Properties.Resources.Cancel;
+            this.btnRemove.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnRemove.Enabled = false;
+            this.btnRemove.Location = new System.Drawing.Point(420, 330);
+            this.btnRemove.Name = "btnRemove";
+            this.btnRemove.Size = new System.Drawing.Size(27, 26);
+            this.btnRemove.TabIndex = 2;
+            this.toolTip.SetToolTip(this.btnRemove, "Removes selected item from queue");
+            this.btnRemove.UseVisualStyleBackColor = true;
+            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.BackgroundImage = global::FileSharing.Properties.Resources.Refresh;
+            this.btnRefresh.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnRefresh.Enabled = false;
+            this.btnRefresh.Location = new System.Drawing.Point(420, 298);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(27, 26);
+            this.btnRefresh.TabIndex = 2;
+            this.toolTip.SetToolTip(this.btnRefresh, "Refreshes the items in queue");
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
             // btnPush
             // 
             this.btnPush.BackgroundImage = global::FileSharing.Properties.Resources.Push;
@@ -189,19 +216,6 @@
             this.uploadFileBrowse.FileName = "file";
             this.uploadFileBrowse.Multiselect = true;
             // 
-            // btnRefresh
-            // 
-            this.btnRefresh.BackgroundImage = global::FileSharing.Properties.Resources.Refresh;
-            this.btnRefresh.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnRefresh.Enabled = false;
-            this.btnRefresh.Location = new System.Drawing.Point(420, 298);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(27, 26);
-            this.btnRefresh.TabIndex = 2;
-            this.toolTip.SetToolTip(this.btnRefresh, "Refreshes the items in queue");
-            this.btnRefresh.UseVisualStyleBackColor = true;
-            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
-            // 
             // btnSync
             // 
             this.btnSync.BackgroundImage = global::FileSharing.Properties.Resources.SyncDatabase;
@@ -214,18 +228,17 @@
             this.btnSync.UseVisualStyleBackColor = true;
             this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
             // 
-            // btnRemove
+            // btnServerRemove
             // 
-            this.btnRemove.BackgroundImage = global::FileSharing.Properties.Resources.Refresh;
-            this.btnRemove.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnRemove.Enabled = false;
-            this.btnRemove.Location = new System.Drawing.Point(420, 330);
-            this.btnRemove.Name = "btnRemove";
-            this.btnRemove.Size = new System.Drawing.Size(27, 26);
-            this.btnRemove.TabIndex = 2;
-            this.toolTip.SetToolTip(this.btnRemove, "Removes selected item from queue");
-            this.btnRemove.UseVisualStyleBackColor = true;
-            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
+            this.btnServerRemove.BackgroundImage = global::FileSharing.Properties.Resources.Cancel;
+            this.btnServerRemove.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnServerRemove.Enabled = false;
+            this.btnServerRemove.Location = new System.Drawing.Point(420, 78);
+            this.btnServerRemove.Name = "btnServerRemove";
+            this.btnServerRemove.Size = new System.Drawing.Size(27, 26);
+            this.btnServerRemove.TabIndex = 2;
+            this.btnServerRemove.UseVisualStyleBackColor = true;
+            this.btnServerRemove.Click += new System.EventHandler(this.btnServerRemove_Click);
             // 
             // Client
             // 
@@ -237,6 +250,7 @@
             this.Controls.Add(this.lbClient);
             this.Controls.Add(this.lbServer);
             this.Controls.Add(this.pbStatus);
+            this.Controls.Add(this.btnServerRemove);
             this.Controls.Add(this.btnRemove);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnPush);
@@ -279,6 +293,7 @@
         private System.Windows.Forms.OpenFileDialog uploadFileBrowse;
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.Button btnRemove;
+        private System.Windows.Forms.Button btnServerRemove;
     }
 }
 

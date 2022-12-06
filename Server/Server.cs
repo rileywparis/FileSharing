@@ -15,19 +15,30 @@ namespace Server
         private static string PATH = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\AppServer";
         private const int BUFFER_SIZE = 1024 * 1024 * 100;   //1KB x 1,024 = 1MB; 1MB x 100 = 100MB
         private static byte[] buffer = new byte[BUFFER_SIZE];
+        private static string logPath = "";
 
         static void Main(string[] args)
         {
             Console.Title = "Server";
             Directory.CreateDirectory(PATH);
+            Directory.CreateDirectory(PATH + @"\Logs");
             Console.WriteLine("Enter IPv4 address: ");
-            string address = Console.ReadLine();
+            //string address = Console.ReadLine();
             Console.WriteLine("Setting up server...");
-            //serverSocket.Bind(new IPEndPoint(IPAddress.Parse("172.20.8.252"), 25565));  //Modify this; IPv4 Address and port of your choice -------------------------------------------
-            serverSocket.Bind(new IPEndPoint(IPAddress.Parse(address), 25565));
+            serverSocket.Bind(new IPEndPoint(IPAddress.Parse("172.20.8.252"), 25565));  //Modify this; IPv4 Address and port of your choice -------------------------------------------
+            //serverSocket.Bind(new IPEndPoint(IPAddress.Parse(address), 25565));
             serverSocket.Listen(0);
             serverSocket.BeginAccept(AcceptCallback, null);
-            Console.WriteLine("Setup complete");
+
+            logPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\AppServer\Logs\" +
+                DateTime.Now.Year + "." + DateTime.Now.Month + "." + DateTime.Now.Day + "." + DateTime.Now.Hour + "." + DateTime.Now.Minute + "." + DateTime.Now.Second + ".txt";
+            Log("Server Started " + DateTime.Now);
+
+            foreach (string f in Directory.GetFiles(PATH))
+            {
+                Log(f);
+            }
+
             Console.ReadLine();
         }
 
@@ -45,7 +56,7 @@ namespace Server
 
             clientSockets.Add(socket);
             socket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, socket);
-            Console.WriteLine("Client connected");
+            Log("Client connected");
             serverSocket.BeginAccept(AcceptCallback, null);
         }
 
@@ -60,7 +71,7 @@ namespace Server
             }
             catch (SocketException)
             {
-                Console.WriteLine("Client disconnected");
+                Log("Client disconnected");
                 current.Close();
                 clientSockets.Remove(current);
                 return;
@@ -77,7 +88,7 @@ namespace Server
             {
                 int fileNameLen = BitConverter.ToInt32(recBuf, 0);
                 string fileName = new DirectoryInfo(Encoding.ASCII.GetString(recBuf, 4, fileNameLen)).Name;
-                Console.WriteLine(current.LocalEndPoint + " sending " + fileName);
+                Log(current.LocalEndPoint + " sending " + fileName);
                 BinaryWriter bWrite = new BinaryWriter(File.Open(PATH + @"\" + fileName, FileMode.Create));
                 bWrite.Write(recBuf, 4 + fileNameLen, received - 4 - fileNameLen);
                 bWrite.Close();
@@ -91,27 +102,24 @@ namespace Server
             foreach (string f in Directory.GetFiles(PATH))
             {
                 string fileName = new DirectoryInfo(f).Name;
-                if (f != "Upload")
-                {
-                    Console.WriteLine(clientSocket.LocalEndPoint + " receiving " + fileName);
-                    byte[] fileNameByte = Encoding.ASCII.GetBytes(f);
-                    byte[] fileNameLen = BitConverter.GetBytes(fileNameByte.Length);
-                    byte[] fileData = File.ReadAllBytes(f);
-                    byte[] serverData = new byte[4 + fileNameByte.Length + fileData.Length];
+                Log(clientSocket.LocalEndPoint + " receiving " + fileName);
+                byte[] fileNameByte = Encoding.ASCII.GetBytes(f);
+                byte[] fileNameLen = BitConverter.GetBytes(fileNameByte.Length);
+                byte[] fileData = File.ReadAllBytes(f);
+                byte[] serverData = new byte[4 + fileNameByte.Length + fileData.Length];
 
-                    fileNameLen.CopyTo(serverData, 0);
-                    fileNameByte.CopyTo(serverData, 4);
-                    fileData.CopyTo(serverData, 4 + fileNameByte.Length);
-                    clientSocket.Send(serverData);
+                fileNameLen.CopyTo(serverData, 0);
+                fileNameByte.CopyTo(serverData, 4);
+                fileData.CopyTo(serverData, 4 + fileNameByte.Length);
+                clientSocket.Send(serverData);
 
-                    Thread.Sleep(1500); //Temporary pause to prevent bug
-                }
+                Thread.Sleep(1500); //Temporary pause to prevent bug
             }
         }
 
         private static void SendFileNames(Socket clientSocket)
         {
-            Console.WriteLine(clientSocket.LocalEndPoint + " receiving filenames");
+            Log(clientSocket.LocalEndPoint + " receiving filenames");
             string fileNames = "$$$";
             foreach (string f in Directory.GetFiles(PATH))
             {
@@ -123,6 +131,15 @@ namespace Server
             }
             byte[] serverData = Encoding.ASCII.GetBytes(fileNames);
             clientSocket.Send(serverData);
+        }
+
+        private static void Log(string message)
+        {
+            Console.WriteLine(message);
+            using (StreamWriter sw = new StreamWriter(logPath, true))
+            {
+                sw.WriteLine(DateTime.Now.TimeOfDay + "\t" + message);
+            }
         }
     }
 }

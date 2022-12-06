@@ -26,6 +26,7 @@ namespace Server
             //string address = Console.ReadLine();
             Console.WriteLine("Setting up server...");
             serverSocket.Bind(new IPEndPoint(IPAddress.Parse("172.20.8.252"), 25565));  //Modify this; IPv4 Address and port of your choice -------------------------------------------
+            //serverSocket.Bind(new IPEndPoint(IPAddress.Parse("10.63.43.220"), 25565));  //Modify this; IPv4 Address and port of your choice -------------------------------------------
             //serverSocket.Bind(new IPEndPoint(IPAddress.Parse(address), 25565));
             serverSocket.Listen(0);
             serverSocket.BeginAccept(AcceptCallback, null);
@@ -33,9 +34,6 @@ namespace Server
             logPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\AppServer\Logs\" +
                 DateTime.Now.Year + "." + DateTime.Now.Month + "." + DateTime.Now.Day + "." + DateTime.Now.Hour + "." + DateTime.Now.Minute + "." + DateTime.Now.Second + ".txt";
             Log("Server Started " + DateTime.Now);
-
-            foreach (string f in Directory.GetFiles(PATH))
-                Log(f);
 
             Console.ReadLine();
         }
@@ -90,6 +88,7 @@ namespace Server
                 BinaryWriter bWrite = new BinaryWriter(File.Open(PATH + @"\" + fileName, FileMode.Create));
                 bWrite.Write(recBuf, 4 + fileNameLen, received - 4 - fileNameLen);
                 bWrite.Close();
+                Notify(current);
             }
 
             current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
@@ -123,11 +122,15 @@ namespace Server
             {
                 string fileName = new DirectoryInfo(f).Name;
                 if (fileName != "Upload")
-                {
                     fileNames += fileName + ";";
-                }
             }
             byte[] serverData = Encoding.ASCII.GetBytes(fileNames);
+            clientSocket.Send(serverData);
+        }
+
+        private static void Notify(Socket clientSocket)
+        {
+            byte[] serverData = Encoding.ASCII.GetBytes("@@@");
             clientSocket.Send(serverData);
         }
 

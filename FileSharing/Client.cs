@@ -16,6 +16,7 @@ namespace FileSharing
         private static string PULL_PATH = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Downloads";
         private static int BUFFER_SIZE = 1024 * 1024 * 100; //1KB x 1,024 = 1MB; 1MB x 100 = 100MB
         private List<string> pushFilePaths = new List<string>();
+        private bool busy = false;
 
         public Client()
         {
@@ -65,7 +66,9 @@ namespace FileSharing
             byte[] clientData = new byte[BUFFER_SIZE];
             int receivedBytesLen = clientSocket.Receive(clientData);
 
-            if (Encoding.ASCII.GetString(clientData, 0, sizeof(char) * 3).Contains("$$$"))
+            if (Encoding.ASCII.GetString(clientData, 0, sizeof(char) * 3).Contains("@@@"))
+                busy = false;
+            else if (Encoding.ASCII.GetString(clientData, 0, sizeof(char) * 3).Contains("$$$"))
             {
                 lbServer.Items.Clear();
                 string[] fileNames = Encoding.ASCII.GetString(clientData).Substring(3).Split(';');
@@ -155,6 +158,10 @@ namespace FileSharing
         {
             foreach (string f in pushFilePaths)
             {
+                while (busy)
+                {
+
+                }
                 byte[] fileNameByte = Encoding.ASCII.GetBytes(f);
                 byte[] fileNameLen = BitConverter.GetBytes(fileNameByte.Length);
                 byte[] fileData = File.ReadAllBytes(f);
@@ -165,7 +172,7 @@ namespace FileSharing
                 fileData.CopyTo(clientData, 4 + fileNameByte.Length);
                 clientSocket.Send(clientData);
 
-                Thread.Sleep(1500);
+                busy = true;
             }
             pushFilePaths.Clear();
             RefreshPullList();

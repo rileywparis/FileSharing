@@ -35,9 +35,7 @@ namespace Server
             Log("Server Started " + DateTime.Now);
 
             foreach (string f in Directory.GetFiles(PATH))
-            {
                 Log(f);
-            }
 
             Console.ReadLine();
         }

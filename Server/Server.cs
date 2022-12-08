@@ -25,8 +25,8 @@ namespace Server
             Console.WriteLine("Enter IPv4 address: ");
             //string address = Console.ReadLine();
             Console.WriteLine("Setting up server...");
-            serverSocket.Bind(new IPEndPoint(IPAddress.Parse("172.20.8.252"), 25565));  //Modify this; IPv4 Address and port of your choice -------------------------------------------
-            //serverSocket.Bind(new IPEndPoint(IPAddress.Parse("10.63.43.220"), 25565));  //Modify this; IPv4 Address and port of your choice -------------------------------------------
+            //serverSocket.Bind(new IPEndPoint(IPAddress.Parse("172.20.8.252"), 25565));  //Modify this; IPv4 Address and port of your choice -------------------------------------------
+            serverSocket.Bind(new IPEndPoint(IPAddress.Parse("10.63.18.226"), 25565));  //Modify this; IPv4 Address and port of your choice -------------------------------------------
             //serverSocket.Bind(new IPEndPoint(IPAddress.Parse(address), 25565));
             serverSocket.Listen(0);
             serverSocket.BeginAccept(AcceptCallback, null);

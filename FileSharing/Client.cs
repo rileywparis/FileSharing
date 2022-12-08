@@ -136,6 +136,8 @@ namespace FileSharing
         {
             if (lbClient.SelectedIndex > 3)
                 pushFilePaths.Remove(lbClient.SelectedItem.ToString());
+            else
+                MessageBox.Show("File not selected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             RefreshPushPaths();
         }
 
@@ -150,21 +152,26 @@ namespace FileSharing
                     File.Delete(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\AppServer\" + @lbServer.SelectedItem.ToString());
             }
             else
-                MessageBox.Show("File not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("File not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             RefreshPullList();
         }
 
-        static void OnProcessExit(object sender, EventArgs e)
+        private void Client_FormClosing(object sender, FormClosingEventArgs e)
         {
-            clientSocket.Disconnect(true);
+            if (clientSocket.Connected)
+                clientSocket.Close();
         }
 
         private void PushFiles()
         {
+            progressBar.Visible = true;
+            int i = 0;
             foreach (string f in pushFilePaths)
             {
                 System.Threading.SpinWait.SpinUntil(() => !busy);
+                Thread.Sleep(1500);
                 busy = true;
+                progressBar.Value = (i / pushFilePaths.Count) * 100;
 
                 byte[] fileNameByte = Encoding.ASCII.GetBytes(f);
                 byte[] fileNameLen = BitConverter.GetBytes(fileNameByte.Length);
@@ -175,7 +182,9 @@ namespace FileSharing
                 fileNameByte.CopyTo(clientData, 4);
                 fileData.CopyTo(clientData, 4 + fileNameByte.Length);
                 clientSocket.Send(clientData);
+                ++i;
             }
+            progressBar.Visible = false;
             pushFilePaths.Clear();
             RefreshPullList();
             RefreshPushPaths();

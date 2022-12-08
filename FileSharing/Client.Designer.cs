@@ -49,6 +49,7 @@
             this.uploadFileBrowse = new System.Windows.Forms.OpenFileDialog();
             this.btnSync = new System.Windows.Forms.Button();
             this.btnServerRemove = new System.Windows.Forms.Button();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.pbStatus)).BeginInit();
             this.SuspendLayout();
             // 
@@ -240,11 +241,20 @@
             this.btnServerRemove.UseVisualStyleBackColor = true;
             this.btnServerRemove.Click += new System.EventHandler(this.btnServerRemove_Click);
             // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(179, 477);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(100, 23);
+            this.progressBar.TabIndex = 7;
+            this.progressBar.Visible = false;
+            // 
             // Client
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(459, 516);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.btnUpload);
             this.Controls.Add(this.btn);
             this.Controls.Add(this.lbClient);
@@ -266,6 +276,7 @@
             this.MinimizeBox = false;
             this.Name = "Client";
             this.Text = "File Sharing";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Client_FormClosing);
             this.Load += new System.EventHandler(this.Client_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pbStatus)).EndInit();
             this.ResumeLayout(false);
@@ -294,6 +305,7 @@
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.Button btnRemove;
         private System.Windows.Forms.Button btnServerRemove;
+        private System.Windows.Forms.ProgressBar progressBar;
     }
 }
 

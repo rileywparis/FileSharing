@@ -16,6 +16,7 @@ namespace Server
         private const int BUFFER_SIZE = 1024 * 1024 * 100;   //1KB x 1,024 = 1MB; 1MB x 100 = 100MB
         private static byte[] buffer = new byte[BUFFER_SIZE];
         private static string logPath = "";
+        private static bool busy = false;
 
         static void Main(string[] args)
         {
@@ -25,8 +26,8 @@ namespace Server
             Console.WriteLine("Enter IPv4 address: ");
             //string address = Console.ReadLine();
             Console.WriteLine("Setting up server...");
-            //serverSocket.Bind(new IPEndPoint(IPAddress.Parse("172.20.8.252"), 25565));  //Modify this; IPv4 Address and port of your choice -------------------------------------------
-            serverSocket.Bind(new IPEndPoint(IPAddress.Parse("10.63.18.226"), 25565));  //Modify this; IPv4 Address and port of your choice -------------------------------------------
+            serverSocket.Bind(new IPEndPoint(IPAddress.Parse("172.20.8.252"), 25565));  //Modify this; IPv4 Address and port of your choice -------------------------------------------
+            //serverSocket.Bind(new IPEndPoint(IPAddress.Parse("10.63.18.226"), 25565));  //Modify this; IPv4 Address and port of your choice -------------------------------------------
             //serverSocket.Bind(new IPEndPoint(IPAddress.Parse(address), 25565));
             serverSocket.Listen(0);
             serverSocket.BeginAccept(AcceptCallback, null);
@@ -76,7 +77,9 @@ namespace Server
             byte[] recBuf = new byte[received];
             Array.Copy(buffer, recBuf, received);
 
-            if (Encoding.ASCII.GetString(recBuf).Equals("pull"))
+            if (Encoding.ASCII.GetString(recBuf).Equals("@@@"))
+                busy = false;
+            else if (Encoding.ASCII.GetString(recBuf).Equals("pull"))
                 Send(current);
             else if (Encoding.ASCII.GetString(recBuf).Equals("getfiles"))
                 SendFileNames(current);
@@ -84,33 +87,36 @@ namespace Server
             {
                 int fileNameLen = BitConverter.ToInt32(recBuf, 0);
                 string fileName = new DirectoryInfo(Encoding.ASCII.GetString(recBuf, 4, fileNameLen)).Name;
-                Log(current.LocalEndPoint + " sending " + fileName);
+                Log(current.LocalEndPoint + " sending " + fileName + "\tSize: " + (recBuf.Length / 1048576f) + "MB");
                 BinaryWriter bWrite = new BinaryWriter(File.Open(PATH + @"\" + fileName, FileMode.Create));
                 bWrite.Write(recBuf, 4 + fileNameLen, received - 4 - fileNameLen);
                 bWrite.Close();
+                Notify(current);
             }
 
             current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
-            Notify(current);
         }
 
         private static void Send(Socket clientSocket)
         {
             foreach (string f in Directory.GetFiles(PATH))
             {
+                //System.Threading.SpinWait.SpinUntil(() => !busy);
+                //busy = true;
+
                 string fileName = new DirectoryInfo(f).Name;
-                Log(clientSocket.LocalEndPoint + " receiving " + fileName);
                 byte[] fileNameByte = Encoding.ASCII.GetBytes(f);
                 byte[] fileNameLen = BitConverter.GetBytes(fileNameByte.Length);
                 byte[] fileData = File.ReadAllBytes(f);
                 byte[] serverData = new byte[4 + fileNameByte.Length + fileData.Length];
+                Log(clientSocket.LocalEndPoint + " receiving " + fileName + "\tSize: " + (fileData.Length / 1048576f) + "MB");
 
                 fileNameLen.CopyTo(serverData, 0);
                 fileNameByte.CopyTo(serverData, 4);
                 fileData.CopyTo(serverData, 4 + fileNameByte.Length);
                 clientSocket.Send(serverData);
 
-                Thread.Sleep(1500); //Temporary pause to prevent bug
+                Thread.Sleep((int)(fileData.Length * 0.00003)); //Temporary pause to prevent bug
             }
         }
 

@@ -82,7 +82,9 @@ namespace FileSharing
                 BinaryWriter bWrite = new BinaryWriter(File.Open(PULL_PATH + @"\" + fileName, FileMode.Create));
                 bWrite.Write(clientData, 4 + fileNameLen, receivedBytesLen - 4 - fileNameLen);
                 bWrite.Close();
+                //Notify();
             }
+
             ReceiveMessage();
         }
 
@@ -91,7 +93,13 @@ namespace FileSharing
             if (uploadFileBrowse.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 foreach (string f in uploadFileBrowse.FileNames)
-                    pushFilePaths.Add(f);
+                {
+                    FileInfo fi = new FileInfo(f);
+                    if (fi.Length <= BUFFER_SIZE)
+                        pushFilePaths.Add(f);
+                    else
+                        MessageBox.Show("File too large. Files cannot be larger than 100MB", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 RefreshPushPaths();
             }
         }
@@ -137,7 +145,7 @@ namespace FileSharing
             if (lbClient.SelectedIndex > 3)
                 pushFilePaths.Remove(lbClient.SelectedItem.ToString());
             else
-                MessageBox.Show("File not selected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("File not selected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             RefreshPushPaths();
         }
 
@@ -152,7 +160,7 @@ namespace FileSharing
                     File.Delete(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\AppServer\" + @lbServer.SelectedItem.ToString());
             }
             else
-                MessageBox.Show("File not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("File not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             RefreshPullList();
         }
 
@@ -164,14 +172,13 @@ namespace FileSharing
 
         private void PushFiles()
         {
-            progressBar.Visible = true;
-            int i = 0;
+            //progressBar.Visible = true;
+            //int i = 0;
             foreach (string f in pushFilePaths)
             {
                 System.Threading.SpinWait.SpinUntil(() => !busy);
-                Thread.Sleep(1500);
                 busy = true;
-                progressBar.Value = (i / pushFilePaths.Count) * 100;
+                //progressBar.Value = (i / pushFilePaths.Count) * 100;
 
                 byte[] fileNameByte = Encoding.ASCII.GetBytes(f);
                 byte[] fileNameLen = BitConverter.GetBytes(fileNameByte.Length);
@@ -182,9 +189,9 @@ namespace FileSharing
                 fileNameByte.CopyTo(clientData, 4);
                 fileData.CopyTo(clientData, 4 + fileNameByte.Length);
                 clientSocket.Send(clientData);
-                ++i;
+                //++i;
             }
-            progressBar.Visible = false;
+            //progressBar.Visible = false;
             pushFilePaths.Clear();
             RefreshPullList();
             RefreshPushPaths();
@@ -211,6 +218,12 @@ namespace FileSharing
         private void PullAll()
         {
             byte[] clientData = Encoding.ASCII.GetBytes("pull");
+            clientSocket.Send(clientData);
+        }
+
+        private void Notify()
+        {
+            byte[] clientData = Encoding.ASCII.GetBytes("@@@");
             clientSocket.Send(clientData);
         }
     }

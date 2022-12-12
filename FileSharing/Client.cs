@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Media;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -43,10 +44,14 @@ namespace FileSharing
                 {
                     clientSocket.Connect(address[0], int.Parse(address[1]));
                 }
-                catch (SocketException) { }
+                catch (SocketException)
+                {
+                    MessageBox.Show("Could not connect to server", "No connection", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             if (clientSocket.Connected)
             {
+                new SoundPlayer(@"c:\Windows\Media\Windows Print complete.wav").Play();
                 pbStatus.BackgroundImage = FileSharing.Properties.Resources.CloudOK;
                 btnPull.Enabled = true;
                 btnPush.Enabled = true;
@@ -143,7 +148,10 @@ namespace FileSharing
         private void btnRemove_Click(object sender, EventArgs e)
         {
             if (lbClient.SelectedIndex > 3)
+            {
                 pushFilePaths.Remove(lbClient.SelectedItem.ToString());
+                new SoundPlayer(@"c:\Windows\Media\Windows Recycle.wav").Play();
+            }
             else
                 MessageBox.Show("File not selected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             RefreshPushPaths();
@@ -157,7 +165,10 @@ namespace FileSharing
                 DialogResult d = MessageBox.Show("Are you sure you want to permanently delete file?", "Warning!", MessageBoxButtons.OKCancel);
 
                 if (d == DialogResult.OK)
+                {
                     File.Delete(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\AppServer\" + @lbServer.SelectedItem.ToString());
+                    new SoundPlayer(@"c:\Windows\Media\Windows Recycle.wav").Play();
+                }
             }
             else
                 MessageBox.Show("File not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -172,6 +183,7 @@ namespace FileSharing
 
         private void PushFiles()
         {
+            bool added = false;
             //progressBar.Visible = true;
             //int i = 0;
             foreach (string f in pushFilePaths)
@@ -189,16 +201,21 @@ namespace FileSharing
                 fileNameByte.CopyTo(clientData, 4);
                 fileData.CopyTo(clientData, 4 + fileNameByte.Length);
                 clientSocket.Send(clientData);
+                added = true;
                 //++i;
             }
             //progressBar.Visible = false;
             pushFilePaths.Clear();
             RefreshPullList();
             RefreshPushPaths();
+            if (added)
+                new SoundPlayer(@"c:\Windows\Media\Windows Unlock.wav").Play();
         }
 
         private void RefreshPushPaths()
         {
+            lbClient.Items.Clear();
+            lbClient.Items.Add("Refreshing");
             lbClient.Items.Clear();
             lbClient.Items.Add("Save to: " + PULL_PATH);
             lbClient.Items.Add("Upload from: " + PUSH_PATH);

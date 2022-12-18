@@ -70,7 +70,7 @@
             this.txtAddress.Name = "txtAddress";
             this.txtAddress.Size = new System.Drawing.Size(179, 26);
             this.txtAddress.TabIndex = 1;
-            this.txtAddress.Text = "172.20.8.252:25565";
+            this.txtAddress.Text = "192.168.40.26:25565";
             this.toolTip.SetToolTip(this.txtAddress, "Host and port seperated by colon :");
             // 
             // lbServer
@@ -108,11 +108,13 @@
             // 
             // lbClient
             // 
+            this.lbClient.AllowDrop = true;
             this.lbClient.FormattingEnabled = true;
             this.lbClient.Location = new System.Drawing.Point(12, 298);
             this.lbClient.Name = "lbClient";
             this.lbClient.Size = new System.Drawing.Size(402, 173);
             this.lbClient.TabIndex = 4;
+            this.lbClient.DragDrop += new System.Windows.Forms.DragEventHandler(this.lbClient_DragDrop);
             this.lbClient.DoubleClick += new System.EventHandler(this.lbClient_DoubleClick);
             // 
             // btn
@@ -254,10 +256,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(459, 516);
+            this.Controls.Add(this.lbClient);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.btnUpload);
             this.Controls.Add(this.btn);
-            this.Controls.Add(this.lbClient);
             this.Controls.Add(this.lbServer);
             this.Controls.Add(this.pbStatus);
             this.Controls.Add(this.btnServerRemove);

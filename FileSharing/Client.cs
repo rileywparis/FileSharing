@@ -141,7 +141,7 @@ namespace FileSharing
                 Process.Start(PULL_PATH);
             else if (lbClient.SelectedIndex == 1)
                 Process.Start(PUSH_PATH);
-            else if (File.Exists(lbClient.SelectedItem.ToString()))
+            else if (lbClient.SelectedItem != null && File.Exists(lbClient.SelectedItem.ToString()))
                 Process.Start(lbClient.SelectedItem.ToString());
         }
 
@@ -242,6 +242,14 @@ namespace FileSharing
         {
             byte[] clientData = Encoding.ASCII.GetBytes("@@@");
             clientSocket.Send(clientData);
+        }
+
+        [STAThread]
+        private void lbClient_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (string file in files)
+                lbClient.Items.Add(file.ToString());
         }
     }
 }

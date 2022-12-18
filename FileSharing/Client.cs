@@ -59,6 +59,8 @@ namespace FileSharing
                 btnRemove.Enabled = true;
                 btnRefresh.Enabled = true;
                 btnServerRemove.Enabled = true;
+                btnUpload.Enabled = true;
+                lbClient.AllowDrop = true;
                 RefreshPullList();
 
                 Thread t = new Thread(() => ReceiveMessage());
@@ -184,13 +186,10 @@ namespace FileSharing
         private void PushFiles()
         {
             bool added = false;
-            //progressBar.Visible = true;
-            //int i = 0;
             foreach (string f in pushFilePaths)
             {
                 System.Threading.SpinWait.SpinUntil(() => !busy);
                 busy = true;
-                //progressBar.Value = (i / pushFilePaths.Count) * 100;
 
                 byte[] fileNameByte = Encoding.ASCII.GetBytes(f);
                 byte[] fileNameLen = BitConverter.GetBytes(fileNameByte.Length);
@@ -202,9 +201,7 @@ namespace FileSharing
                 fileData.CopyTo(clientData, 4 + fileNameByte.Length);
                 clientSocket.Send(clientData);
                 added = true;
-                //++i;
             }
-            //progressBar.Visible = false;
             pushFilePaths.Clear();
             RefreshPullList();
             RefreshPushPaths();
@@ -244,12 +241,19 @@ namespace FileSharing
             clientSocket.Send(clientData);
         }
 
-        [STAThread]
         private void lbClient_DragDrop(object sender, DragEventArgs e)
         {
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
             foreach (string file in files)
+            {
                 lbClient.Items.Add(file.ToString());
+                pushFilePaths.Add(file.ToString());
+            }
+        }
+
+        private void lbClient_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Copy;
         }
     }
 }

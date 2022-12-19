@@ -89,7 +89,6 @@ namespace FileSharing
                 BinaryWriter bWrite = new BinaryWriter(File.Open(PULL_PATH + @"\" + fileName, FileMode.Create));
                 bWrite.Write(clientData, 4 + fileNameLen, receivedBytesLen - 4 - fileNameLen);
                 bWrite.Close();
-                //Notify();
             }
 
             ReceiveMessage();
@@ -232,12 +231,6 @@ namespace FileSharing
         private void PullAll()
         {
             byte[] clientData = Encoding.ASCII.GetBytes("pull");
-            clientSocket.Send(clientData);
-        }
-
-        private void Notify()
-        {
-            byte[] clientData = Encoding.ASCII.GetBytes("@@@");
             clientSocket.Send(clientData);
         }
 
